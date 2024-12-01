@@ -1,0 +1,49 @@
+---
+title: "Day 1: Historian Hysteria"
+author: AndiF
+date: 1 Dec 2024
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+
+```{r}
+dat <- read.table("aoc01.txt")
+```
+
+
+### Part 1
+
+```{r}
+sortdat <- data.frame(V1 = sort(dat$V1), V2 = sort(dat$V2)) |>
+  mutate(dist = abs(V1 - V2))
+sum(sortdat$dist)
+```
+
+
+### Part 2
+
+```{r}
+tally_right <- dat |>
+  group_by(V2) |>
+  tally() |>
+  rename(V1 = V2)
+```
+
+```{r}
+left <- dat |>
+  select(V1) |>
+  left_join(tally_right) |>
+  replace_na(list(n = 0)) |>
+  mutate(sim = V1 * n)
+```
+
+```{r}
+sum(left$sim)
+```
+
