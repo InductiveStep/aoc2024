@@ -11,7 +11,7 @@ output:
 library(tidyverse)
 ```
 
-The lines have different numbers of reports, to load it in using a rawer format...
+The lines have different numbers of reports, so loading it in using a rawer method than the usual read.csv and friends:
 
 ```{r}
 dat <- read_lines("aoc02.txt")
@@ -22,7 +22,7 @@ dat <- read_lines("aoc02.txt")
 head(dat)
 ```
 
-Split each string on the space and make a list of numeric vectors:
+That's a vector of strings. Next, split each string on the space and make a list of numeric vectors:
 
 ```{r}
 repl <- strsplit(dat, " ") |> map(as.numeric)
