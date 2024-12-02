@@ -1,0 +1,86 @@
+---
+title: "Day 2: Red-Nosed Reports"
+author: AndiF
+date: 2 Dec 2024
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+The lines have different numbers of reports, to load it in using a rawer format...
+
+```{r}
+dat <- read_lines("aoc02.txt")
+```
+
+
+```{r}
+head(dat)
+```
+
+Split each string on the space and make a list of numeric vectors:
+
+```{r}
+repl <- strsplit(dat, " ") |> map(as.numeric)
+head(repl)
+```
+
+### Part 1
+
+The rules are:
+
+* The levels are either all increasing or all decreasing.
+* Any two adjacent levels differ by at least one and at most three.
+
+Wrap in a function:
+
+```{r}
+test_report <- function(nums) {
+  test_diffs <- diff(nums, lag = 1, difference = 1)
+  all(test_diffs %in% 1:3) || all(-test_diffs %in% 1:3) 
+}
+```
+
+The answer:
+
+```{r}
+res <- map_lgl(repl, test_report)
+sum(res)
+```
+
+
+### Part 2
+
+I'm going to brute force this one and try dropping elements even if it's unnecessary, as I don't have time to be clever 🙃
+
+```{r}
+robust_test_report <- function(nums) {
+  if (test_report(nums)) {
+    TRUE
+  }
+  else {
+    res <- FALSE
+    for (i in 1:length(nums)) {
+      res <- test_report(nums[-i])
+      if (res)
+        break
+    }
+    res
+  }
+}
+```
+
+And it worked:
+
+```{r}
+robust_res <- map_lgl(repl, robust_test_report)
+sum(robust_res)
+```
+
+
+
+
