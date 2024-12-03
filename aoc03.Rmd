@@ -1,0 +1,69 @@
+---
+title: "Day 3: Mull It Over"
+author: AndiF
+date: 3 Dec 2024
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+Read in the problem:
+
+```{r}
+dat <- read_lines("aoc03.txt")
+```
+
+Line breaks aren't special, so paste the lot together:
+
+```{r}
+longmess <- paste0(dat)
+```
+
+### Part 1
+
+Regex time. Try with an easy test:
+
+```{r}
+easy_test <- "mul(2,4)ggsrjkgjdfmul(224,221)gielmul(1234,12)fskjd"
+str_extract_all(easy_test, "mul\\([0-9]{1,3},[0-9]{1,3}\\)")
+```
+
+It worked. Now do it for _longmess_.
+
+```{r}
+mults <- str_extract_all(longmess, "mul\\([0-9]{1,3},[0-9]{1,3}\\)") |>
+  list_c()
+mults |> head(20)
+```
+
+I'm going to let R parse each string.
+
+```{r}
+mul <- function(x,y) x*y
+
+mult_one <- function(str) {
+  str |> parse(text = _) |> eval()
+}
+```
+
+Here's a test:
+
+```{r}
+mult_one("mul(6,7)")
+```
+
+The answer:
+
+```{r}
+map_int(mults, mult_one) |> sum()
+```
+
+### Part 2
+
+TBC
+
+
