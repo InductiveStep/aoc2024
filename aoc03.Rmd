@@ -63,7 +63,7 @@ map_int(mults, mult_one) |> sum()
 
 ### Part 2
 
-The logic is, hike out anything between a "don't()" and a "do()", the run the code above on what remains.
+The logic is, hike out anything between a "don't()" and a "do()", then run the code above on what remains. This also deals with consecutive do's automatically.
 
 ```{r}
 get_do <- function(str) {
@@ -113,7 +113,7 @@ Give it a go:
 new_longmess <- longmess |> get_do()
 ```
 
-A bit of copy paste...
+A bit of copy and paste...
 
 ```{r}
 mults <- str_extract_all(new_longmess, "mul\\([0-9]{1,3},[0-9]{1,3}\\)")[[1]]
