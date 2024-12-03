@@ -42,7 +42,7 @@ mults |> head(20)
 I'm going to let R parse each string.
 
 ```{r}
-mul <- function(x,y) x*y
+mul <- function(x,y) x * y
 
 mult_one <- function(str) {
   str |> parse(text = _) |> eval()
@@ -63,7 +63,7 @@ map_int(mults, mult_one) |> sum()
 
 ### Part 2
 
-The logic is, hike out anything between a "don't()" and a "do()", then run the code above on what remains. This also deals with consecutive do's automatically.
+The logic is, hike out anything between a "don't()" and a "do()", then run the code above on what remains. This also deals with consecutive "do()"s automatically.
 
 ```{r}
 get_do <- function(str) {
