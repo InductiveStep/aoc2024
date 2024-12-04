@@ -9,3 +9,5 @@ Solutions:
 [Day 2: Red-Nosed Reports](https://inductivestep.github.io/aoc2024/aoc02.nb.html)
 
 [Day 3: Mull It Over](https://inductivestep.github.io/aoc2024/aoc03.nb.html)
+
+[Day 4: Ceres Search](https://inductivestep.github.io/aoc2024/aoc04.nb.html)
