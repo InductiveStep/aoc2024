@@ -61,12 +61,8 @@ Test one rule on one vector of pages:
 
 ```{r}
 test_rule <- function(first, second, pages) {
-  # I have no idea why I sorted here
-  # Maybe I thought the same page number
-  # may appear more than once?? It made
-  # sense this morning before work
-  first_i  <- which(pages == first)  |> sort()
-  second_i <- which(pages == second) |> sort()
+  first_i  <- which(pages == first)
+  second_i <- which(pages == second)
   
   !is.unsorted(c(first_i, second_i))
 }
