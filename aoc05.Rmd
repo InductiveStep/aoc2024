@@ -141,10 +141,12 @@ sort_pages <- function(vec) {
 
 
 ```{r}
+tic()
 broken |>
   map(sort_pages) |>
   map_int(mid_val) |>
   sum()
+toc()
 ```
 
 
