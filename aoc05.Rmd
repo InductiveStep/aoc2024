@@ -120,7 +120,7 @@ head(broken)
 ```
 
 
-The following section is brought to you by thinking, "Surely there's a graph algorithm for this", and also some wishful thinking about the completeness of the rules (prompted by the meaningfulness of the middle page).
+The following section is brought to you by thinking, "Surely there's a graph algorithm for this", and also some wishful thinking about the completeness of the rules (prompted by the existence of a unique middle page).
 
 
 ```{r message=FALSE, warning=FALSE}
