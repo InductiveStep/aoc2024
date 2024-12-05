@@ -1,0 +1,152 @@
+---
+title: "Day 5: Print Queue"
+author: AndiF
+date: 5 Dec 2024
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(stringr)
+library(tictoc)
+```
+
+Read in the problem:
+
+```{r}
+dat <- read_lines("aoc05.txt")
+```
+
+Split into the rules and pages:
+
+```{r}
+split_i <- which(dat == "")
+rules_raw <- dat[1:(split_i - 1)]
+pages_raw <- dat[(split_i + 1):length(dat)]
+```
+
+Take a look:
+
+```{r}
+head(rules_raw)
+```
+
+```{r}
+head(pages_raw)
+```
+
+Make a nice dataframe of rules:
+
+```{r}
+rules <- rules_raw |>
+  str_split_fixed("\\|", 2) |>
+  as.data.frame() |>
+  rename(first = V1, second = V2)
+head(rules)
+```
+
+Make a nice list of pages:
+
+```{r}
+pages <- strsplit(pages_raw, ",")
+head(pages)
+```
+
+
+### Part 1
+
+Test one rule on one vector of pages:
+
+```{r}
+test_rule <- function(first, second, pages) {
+  first_i  <- which(pages == first)  |> sort()
+  second_i <- which(pages == second) |> sort()
+  
+  !is.unsorted(c(first_i, second_i))
+}
+```
+
+Test all the rules on one vector of pages:
+
+```{r}
+test_all_rules <- function(page_vec) {
+  map2_lgl(rules$first, rules$second,
+           \(f, s) test_rule(f, s, page_vec)) |>
+    all()
+}
+```
+
+Test all the rules on all the pages:
+
+```{r}
+test_all_pages <- function(pages_list) {
+  map_lgl(pages_list, test_all_rules)
+}
+```
+
+
+```{r}
+tic()
+res <- test_all_pages(pages)
+toc()
+```
+
+Look up the print runs that satisfy the rules:
+
+```{r}
+sorted_pages <- pages[res]
+```
+
+Sum the middle pages:
+
+```{r}
+mid_val <- function(vec) {
+  middle <- (1 + length(vec)) / 2
+  vec[middle] |> as.numeric()
+}
+
+map_int(sorted_pages, mid_val) |> sum()
+```
+
+### Part 2
+
+Get the unordered pages:
+
+```{r}
+broken <- pages[!res]
+head(broken)
+```
+
+
+The following section is brought to you by thinking, "Surely there's a graph algorithm for this", and also some wishful thinking about the completeness of the rules (prompted by the meaningfulness of the middle page).
+
+
+```{r message=FALSE, warning=FALSE}
+library(igraph)
+```
+
+
+```{r}
+sort_pages <- function(vec) {
+  rules |>
+    filter(first %in% vec & second %in% vec) |>
+    as.matrix() |>
+    graph_from_edgelist() |>
+    topo_sort() |>
+    names()
+}
+```
+
+
+```{r}
+broken |>
+  map(sort_pages) |>
+  map_int(mid_val) |>
+  sum()
+```
+
+
+
+
