@@ -1,0 +1,90 @@
+---
+title: "Day 6: Guard Gallivant"
+author: AndiF
+date: 6 Dec 2024
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(stringr)
+library(tictoc)
+```
+
+Read in the problem:
+
+```{r}
+dat <- read_lines("aoc06.txt")
+mapmat <- str_split_fixed(dat, "", n = str_length(dat[1]))
+```
+
+Top left corner of the map:
+
+```{r}
+mapmat[1:10, 1:10]
+```
+
+
+### Part 1
+
+Here are the moves:
+
+```{r}
+moves <- read.csv(text = "now,then,row_step,col_step
+N,E,-1,0
+S,W,1,0
+W,N,0,-1
+E,S,0,1")
+moves
+```
+
+A dirty loop:
+
+```{r}
+work_map <- mapmat
+cur_dir <- "N"
+cur_pos <- which(mapmat == "^", arr.ind = TRUE)
+work_map[cur_pos] <- "X"
+
+tic()
+done <- FALSE
+while (!done) {
+  cur_move <- moves |>
+    filter(now == cur_dir)
+  
+  new_pos <- matrix(c(NA, NA), nrow = 1, ncol = 2)
+  new_pos[1] <- cur_pos[1] + cur_move$row_step
+  new_pos[2] <- cur_pos[2] + cur_move$col_step
+  
+  if (!between(new_pos[1], 1, nrow(work_map)) ||
+      !between(new_pos[2], 1, ncol(work_map))) {
+    done <- TRUE  
+  }
+  else if (work_map[new_pos] %in% c(".", "X")) {
+    work_map[new_pos] <- "X"
+    cur_pos <- new_pos
+  }
+  else  {
+    cur_dir <- cur_move$then
+  }
+}
+toc()
+```
+
+Two bugs that wasted some time:
+
+1. Forgot that the guard can walk over their own path again.
+
+2. Needed to check that the new position was still on the map, rather than only current position.
+
+
+```{r}
+which(work_map == "X") |> length()
+```
+
+### Part 2
+
+TBC (about to start day job...)
+

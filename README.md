@@ -13,3 +13,5 @@ Solutions:
 [Day 4: Ceres Search](https://inductivestep.github.io/aoc2024/aoc04.nb.html)
 
 [Day 5: Print Queue](https://inductivestep.github.io/aoc2024/aoc05.nb.html)
+
+[Day 6: Guard Gallivant](https://inductivestep.github.io/aoc2024/aoc06.nb.html)
