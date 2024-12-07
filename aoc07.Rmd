@@ -118,8 +118,77 @@ the_sum
 
 ### Part 2
 
-TBC
+```{r}
+concat <- function(x, y) {
+  paste0(as.character(x), as.character(y)) |> as.bigz()
+}
+```
 
 
+```{r}
+combs_ops_v2 <- function(num_n) {
+  replicate(num_n - 1, c("plus", "mult", "concat"), simplify = FALSE) |>
+    expand.grid(stringsAsFactors = FALSE,
+                KEEP.OUT.ATTRS = FALSE)
+}
+```
+
+
+Well, this is going to blow up spectacularly...
+
+```{r}
+calc_v2 <- function(nums, ops, target) {
+  res <- nums[1]
+  
+  for (i in 2:length(nums)) {
+    the_op <- ops[i - 1] |> as.vector()
+    stopifnot(the_op %in% c("plus", "mult", "concat"))
+    if (the_op == "plus") {
+      res <- res + nums[i]
+    }
+    else if (the_op == "mult") {
+      res <- res * nums[i]
+    }
+    else {
+      res <- concat(res, nums[i])
+    }
+  }
+  
+  res == target
+}
+```
+
+
+```{r}
+check_all_v2 <- function(nums, target) {
+  all_ops <- combs_ops_v2(length(nums))
+  found_it <- FALSE
+  
+  for (r in 1:nrow(all_ops)) {
+    this_ops <- all_ops[r,] |> as.vector()
+    found_it <- calc_v2(nums, this_ops, target)
+    if (found_it)
+      break
+  }
+  
+  found_it
+}
+```
+
+
+```{r}
+tic()
+res_v2 <- map2_lgl(inp, out, check_all_v2)
+toc()
+```
+
+
+```{r}
+to_sum <- out[res_v2]
+the_sum <- to_sum[[1]]
+for (i in 2:length(to_sum))
+  the_sum <- the_sum + to_sum[[i]]
+the_sum
+```
 
 
