@@ -1,0 +1,125 @@
+---
+title: "Day 7: Bridge Repair"
+author: AndiF
+date: 7 Dec 2024
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(stringr)
+library(tictoc)
+library(gmp)
+```
+
+```{r}
+dat <- read_lines("aoc07.txt")
+```
+
+
+```{r}
+head(dat)
+```
+
+```{r}
+splitcolon <- strsplit(dat, ": ")
+out <- splitcolon |> map(\(x) x[1] |> as.bigz())
+inp <- splitcolon |> map(\(x) x[2] |>
+                                strsplit(, split = " ") |>
+                                pluck(1) |>
+                                as.bigz()
+                        )
+```
+
+The inputs:
+
+```{r}
+head(inp, 2)
+```
+
+The target values:
+
+```{r}
+head(out, 2)
+```
+
+### Part 1
+
+Get all combos of operators:
+
+```{r}
+combs_ops <- function(num_n) {
+  replicate(num_n - 1, c("plus", "mult"), simplify = FALSE) |>
+    expand.grid(stringsAsFactors = FALSE,
+                KEEP.OUT.ATTRS = FALSE)
+}
+```
+
+
+Do one sum:
+
+```{r}
+calc <- function(nums, ops, target) {
+  res <- nums[1]
+  
+  for (i in 2:length(nums)) {
+    the_op <- ops[i - 1] |> as.vector()
+    stopifnot(the_op %in% c("plus", "mult"))
+    if (the_op == "plus") {
+      res <- res + nums[i]
+    }
+    else {
+      res <- res * nums[i]
+    }
+  }
+  
+  res == target
+}
+```
+
+
+Check them all for one list of inputs and a target:
+
+```{r}
+check_all <- function(nums, target) {
+  all_ops <- combs_ops(length(nums))
+  found_it <- FALSE
+  
+  for (r in 1:nrow(all_ops)) {
+    this_ops <- all_ops[r,] |> as.vector()
+    found_it <- calc(nums, this_ops, target)
+    if (found_it)
+      break
+  }
+  
+  found_it
+}
+```
+
+Now do it for everything. I wonder will map work okay with {gmp}...
+
+```{r}
+tic()
+res <- map2_lgl(inp, out, check_all)
+toc()
+```
+
+It did. Not taking any chances with the final sum...
+
+```{r}
+to_sum <- out[res]
+the_sum <- to_sum[[1]]
+for (i in 2:length(to_sum))
+  the_sum <- the_sum + to_sum[[i]]
+the_sum
+```
+
+### Part 2
+
+TBC
+
+
+
+

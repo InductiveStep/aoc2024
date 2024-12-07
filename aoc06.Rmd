@@ -45,7 +45,7 @@ A dirty loop:
 ```{r}
 work_map <- mapmat
 cur_dir <- "N"
-cur_pos <- which(mapmat == "^", arr.ind = TRUE)
+cur_pos <- which(work_map == "^", arr.ind = TRUE)
 work_map[cur_pos] <- "X"
 
 tic()
@@ -86,5 +86,101 @@ which(work_map == "X") |> length()
 
 ### Part 2
 
-TBC (about to start day job...)
+(Incomplete.)
+
+Not sure about about this one... I'm going to try to brute force the example first.
+
+```{r}
+testmap_str <- c("....#.....",
+".........#",
+"..........",
+"..#.......",
+".......#..",
+"..........",
+".#..^.....",
+"........#.",
+"#.........",
+"......#...")
+
+testmap <- str_split_fixed(testmap_str, "", n = str_length(testmap_str[1]))
+testmap
+```
+
+
+
+```{r}
+has_loop <- function(the_map) {
+  cur_dir <- "N"
+  cur_pos <- which(the_map == "^", arr.ind = TRUE)
+  blank_map <- matrix(0, nrow = nrow(the_map), ncol = ncol(the_map))
+  been_here <- list(N = blank_map,
+                    S = blank_map,
+                    W = blank_map,
+                    E = blank_map)
+  
+  done <- FALSE
+  loopy <- FALSE
+  while (!done) {
+    been_here[[cur_dir]][cur_pos] <- been_here[[cur_dir]][cur_pos] + 1
+    if (been_here[[cur_dir]][cur_pos] == 2) {
+      loopy <- TRUE
+      break
+    }
+    
+    cur_move <- moves |>
+      filter(now == cur_dir)
+    
+    new_pos <- matrix(c(NA, NA), nrow = 1, ncol = 2)
+    new_pos[1] <- cur_pos[1] + cur_move$row_step
+    new_pos[2] <- cur_pos[2] + cur_move$col_step
+    
+    if (!between(new_pos[1], 1, nrow(the_map)) ||
+        !between(new_pos[2], 1, ncol(the_map))) {
+      done <- TRUE
+    }
+    else if (the_map[new_pos] != "#") {
+      cur_pos <- new_pos
+    }
+    else  {
+      cur_dir <- cur_move$then
+    }
+  }
+  
+  loopy
+}
+```
+
+
+
+
+```{r}
+potentials <- which(testmap == ".", arr.ind = TRUE)
+nrow(potentials)
+```
+
+```{r}
+block_loops <- function(the_map, x, y) {
+  the_map[x, y] <- "#"
+  has_loop(the_map)
+}
+```
+
+
+```{r}
+tic()
+res <- map2_lgl(potentials[,1],
+                potentials[,2],
+                \(x, y) block_loops(testmap, x, y))
+toc()
+```
+
+
+```{r}
+sum(res)
+```
+
+That worked, but it would be way too slow for the full problem (about a day), so the search needs to be much cleverer!
+
+TBC
+
 

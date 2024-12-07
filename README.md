@@ -15,3 +15,6 @@ Solutions:
 [Day 5: Print Queue](https://inductivestep.github.io/aoc2024/aoc05.nb.html)
 
 [Day 6: Guard Gallivant](https://inductivestep.github.io/aoc2024/aoc06.nb.html)
+
+[Day 7: Bridge Repair](https://inductivestep.github.io/aoc2024/aoc07.nb.html)
+
