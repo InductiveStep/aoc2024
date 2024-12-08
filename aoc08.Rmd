@@ -1,0 +1,157 @@
+---
+title: "Day 8: Resonant Collinearity"
+author: AndiF
+date: 8 Dec 2024
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(stringr)
+```
+
+```{r}
+testdat <- c("............",
+"........0...",
+".....0......",
+".......0....",
+"....0.......",
+"......A.....",
+"............",
+"............",
+"........A...",
+".........A..",
+"............",
+"............")
+dat <- read_lines("aoc08.txt")
+mapmat <- str_split_fixed(dat, "", n = str_length(dat[1]))
+```
+
+
+```{r}
+dim(mapmat)
+```
+
+### Part 1
+
+Save the antinodes:
+
+```{r}
+antinodes <- matrix(0, nrow = nrow(mapmat), ncol = nrow(mapmat))
+
+addnode <- function(r, c) {
+  if (between(r, 1, nrow(antinodes)) && between(c, 1, ncol(antinodes))) {
+    antinodes[r, c] <<- antinodes[r, c] + 1
+  }
+}
+```
+
+
+Frequencies:
+
+```{r}
+freqs <- mapmat |> as.vector() |> unique() |> base::setdiff(".") |> sort()
+freqs
+```
+
+
+```{r}
+find_antennas <- function(the_map, the_freq) {
+  which(the_map == the_freq, arr.ind = TRUE)
+}
+```
+
+
+```{r}
+find_antinodes <- function(p1, p2) {
+  dist_row <- abs(p1[1] - p2[1])
+  points <- bind_rows(p1, p2) |>
+    as.data.frame() |>
+    arrange(row)
+  mod <- lm(col ~ row, data = points) # LEL
+
+  min_row <- points[1,]$row - dist_row
+  max_row <- points[2,]$row + dist_row
+  min_col <- predict(mod, newdat = data.frame(row = min_row))
+  max_col <- predict(mod, newdat = data.frame(row = max_row))
+  
+  addnode(min_row, min_col |> round())
+  addnode(max_row, max_col |> round())
+}
+```
+
+
+```{r}
+scan_pairs <- function(the_map, the_freq) {
+  locations <- find_antennas(the_map, the_freq)
+  pair_i    <- combn(1:nrow(locations), 2)
+  
+  for (col in 1:ncol(pair_i)) {
+    first_r  <- pair_i[1, col]
+    second_r <- pair_i[2, col]
+    
+    find_antinodes(locations[first_r,],
+                   locations[second_r,])
+  }
+}
+```
+
+
+```{r}
+for (f in freqs) {
+  scan_pairs(mapmat, f)
+}
+```
+
+
+```{r}
+sum(antinodes > 0)
+```
+
+
+### Part 2
+
+TBC... this works for the example, but not for the full input.
+
+
+```{r}
+antinodes <- matrix(0, nrow = nrow(mapmat), ncol = nrow(mapmat))
+
+addnode <- function(r, c) {
+  if (between(r, 1, nrow(antinodes)) && between(c, 1, ncol(antinodes))) {
+    epsilon <- abs(c - round(c))
+    if (epsilon < 1e-10) {
+      antinodes[r, round(c)] <<- antinodes[r, round(c)] + 1
+    }
+  }
+}
+```
+
+
+```{r}
+find_antinodes <- function(p1, p2) {
+  points <- bind_rows(p1, p2) |>
+    as.data.frame() |>
+    arrange(row)
+  mod <- lm(col ~ row, data = points) # LEL
+  
+  for (the_row in 1:nrow(mapmat)) {
+    the_col <- predict(mod, newdat = data.frame(row = the_row))
+    addnode(the_row, the_col)
+  }
+}
+```
+
+
+```{r}
+for (f in freqs) {
+  scan_pairs(mapmat, f)
+}
+```
+
+
+```{r}
+sum(antinodes > 0)
+```
