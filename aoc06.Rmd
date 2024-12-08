@@ -168,6 +168,8 @@ res <- map2_lgl(potentials[,1],
 toc()
 ```
 
+First (and last) time run, it was 14440.11 sec.
+
 ```{r}
 sum(res)
 ```
