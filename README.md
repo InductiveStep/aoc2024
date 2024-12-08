@@ -17,7 +17,9 @@ my favourite so far, using a DAG and topological sort to speed through part 2.
 Graph algorithms using {igraph}.
 
 [Day 6: Guard Gallivant](https://inductivestep.github.io/aoc2024/aoc06.nb.html)
-&ndash; wasn't feeling this one. Completed part 1.
+&ndash; wasn't feeling this one. Completed part 1 fairly quickly. Thought 
+of an easy way to complete part 2, but it took 4 hours to run. It did eventually
+spit out the correct answer.
 
 [Day 7: Bridge Repair](https://inductivestep.github.io/aoc2024/aoc07.nb.html)
 &ndash; part 1 easy, part 2 needed a cleverer search but brute force worked in an
