@@ -86,27 +86,24 @@ which(work_map == "X") |> length()
 
 ### Part 2
 
-(Incomplete.)
-
-Not sure about about this one... I'm going to try to brute force the example first.
+Originally ran out of time; just realised that I'd already worked out the search space with the X's above:
 
 ```{r}
-testmap_str <- c("....#.....",
-".........#",
-"..........",
-"..#.......",
-".......#..",
-"..........",
-".#..^.....",
-"........#.",
-"#.........",
-"......#...")
-
-testmap <- str_split_fixed(testmap_str, "", n = str_length(testmap_str[1]))
-testmap
+start_pos <- which(mapmat == "^", arr.ind = TRUE)
 ```
 
+I'm sure there's a smaller space, but at least this is less than a day's computations...
 
+Remove the starting position:
+
+```{r}
+potentials <- which(work_map == "X", arr.ind = TRUE) |>
+  as.data.frame() |>
+  filter(!(row == start_pos[1] & col == start_pos[2]))
+nrow(potentials)
+```
+
+Spot a loop by checking if we have passed the same location, pointing the same direction, twice.
 
 ```{r}
 has_loop <- function(the_map) {
@@ -150,13 +147,7 @@ has_loop <- function(the_map) {
 }
 ```
 
-
-
-
-```{r}
-potentials <- which(testmap == ".", arr.ind = TRUE)
-nrow(potentials)
-```
+Stick a block at (x,y) and check if there's a loop.
 
 ```{r}
 block_loops <- function(the_map, x, y) {
@@ -166,21 +157,17 @@ block_loops <- function(the_map, x, y) {
 ```
 
 
+Do it for all the locations we visited in Part 1.
+
 ```{r}
 tic()
 res <- map2_lgl(potentials[,1],
                 potentials[,2],
-                \(x, y) block_loops(testmap, x, y))
+                \(x, y) block_loops(mapmat, x, y),
+                .progress = TRUE)
 toc()
 ```
-
 
 ```{r}
 sum(res)
 ```
-
-That worked, but it would be way too slow for the full problem (about a day), so the search needs to be much cleverer!
-
-TBC
-
-
