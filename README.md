@@ -24,10 +24,9 @@ spit out the correct answer.
 [Day 7: Bridge Repair](https://inductivestep.github.io/aoc2024/aoc07.nb.html)
 &ndash; part 1 easy, part 2 needed a cleverer search but brute force worked in an
 hour. I don't have time right now to do better; however, it's an interesting
-puzzle, so I may revisit at some point. Relies on {gmp} for large integers,
+puzzle, so I may revisit at some point. Uses {gmp} for large integers,
 which works very well.
 
 [Day 8: Resonant Collinearity](https://inductivestep.github.io/aoc2024/aoc08.nb.html)
-&ndash; part 1 easy, using a linear regression model on n=2 (no regrets).
-Part 2 benefited from this hack; however, only worked on the test input,
-not the full puzzle. Surely it's close...
+&ndash; part 1 easy, using a linear regression model on n=2 (no regrets). Out of
+time for part 2.

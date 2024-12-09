@@ -13,18 +13,6 @@ library(stringr)
 ```
 
 ```{r}
-testdat <- c("............",
-"........0...",
-".....0......",
-".......0....",
-"....0.......",
-"......A.....",
-"............",
-"............",
-"........A...",
-".........A..",
-"............",
-"............")
 dat <- read_lines("aoc08.txt")
 mapmat <- str_split_fixed(dat, "", n = str_length(dat[1]))
 ```
@@ -113,45 +101,4 @@ sum(antinodes > 0)
 
 ### Part 2
 
-TBC... this works for the example, but not for the full input.
-
-
-```{r}
-antinodes <- matrix(0, nrow = nrow(mapmat), ncol = nrow(mapmat))
-
-addnode <- function(r, c) {
-  if (between(r, 1, nrow(antinodes)) && between(c, 1, ncol(antinodes))) {
-    epsilon <- abs(c - round(c))
-    if (epsilon < 1e-10) {
-      antinodes[r, round(c)] <<- antinodes[r, round(c)] + 1
-    }
-  }
-}
-```
-
-
-```{r}
-find_antinodes <- function(p1, p2) {
-  points <- bind_rows(p1, p2) |>
-    as.data.frame() |>
-    arrange(row)
-  mod <- lm(col ~ row, data = points) # LEL
-  
-  for (the_row in 1:nrow(mapmat)) {
-    the_col <- predict(mod, newdat = data.frame(row = the_row))
-    addnode(the_row, the_col)
-  }
-}
-```
-
-
-```{r}
-for (f in freqs) {
-  scan_pairs(mapmat, f)
-}
-```
-
-
-```{r}
-sum(antinodes > 0)
-```
+Out of time...
