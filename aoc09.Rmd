@@ -18,12 +18,13 @@ library(gmp)
 dat <- read_lines("aoc09.txt") |>
   strsplit("") |>
   first() |>
-  as.numeric() |>
-  as.integer()
+  as.numeric()
+
 spec <- data.frame(n = dat) |>
   mutate(type = c(rep(c("data", "free"), floor(n()/2)), "data"),
          i = 1:n(),
          id = floor((i + 1)/2) - 1)
+
 head(spec)
 ```
 
