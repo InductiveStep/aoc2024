@@ -29,4 +29,5 @@ which works very well.
 
 [Day 8: Resonant Collinearity](https://inductivestep.github.io/aoc2024/aoc08.nb.html)
 &ndash; part 1 easy, using a linear regression model on n=2 (no regrets). Part 2
-was an easy extension, so glad I used OLS.
+was an easy extension, eventually. I still don't know what the bug
+was but extending part 1 in an even lazier way fixed it.
