@@ -10,6 +10,7 @@ output:
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(stringr)
+library(tictoc)
 ```
 
 ```{r}
@@ -24,7 +25,7 @@ dim(mapmat)
 
 ### Part 1
 
-Save the antinodes:
+Save the antinodes (not only do we have a while loop in this one but also a global variable; just need a goto statement):
 
 ```{r}
 antinodes <- matrix(0, nrow = nrow(mapmat), ncol = nrow(mapmat))
@@ -40,7 +41,7 @@ addnode <- function(r, c) {
 Frequencies:
 
 ```{r}
-freqs <- mapmat |> as.vector() |> unique() |> base::setdiff(".") |> sort()
+freqs <- mapmat |> as.vector() |> unique() |> setdiff(".") |> sort()
 freqs
 ```
 
@@ -59,6 +60,7 @@ find_antinodes <- function(p1, p2) {
     as.data.frame() |>
     arrange(row)
   mod <- lm(col ~ row, data = points) # LEL
+  stopifnot(!(mod |> coef() |> is.na() |> any()))
 
   min_row <- points[1,]$row - dist_row
   max_row <- points[2,]$row + dist_row
@@ -101,4 +103,45 @@ sum(antinodes > 0)
 
 ### Part 2
 
-Out of time...
+I deleted this, started again with an even easier edit, and ran it again and it worked.
+
+Reset the antinodes:
+
+```{r}
+antinodes <- matrix(0, nrow = nrow(mapmat), ncol = nrow(mapmat))
+```
+
+Mild tweak to scan across all the rows.
+
+```{r}
+find_antinodes <- function(p1, p2) {
+  points <- bind_rows(p1, p2) |>
+    as.data.frame() |>
+    arrange(row)
+  mod <- lm(col ~ row, data = points) # LEL
+  stopifnot(!(mod |> coef() |> is.na() |> any()))
+  
+  for (r in 1:nrow(mapmat)) {
+    c <- predict(mod, newdat = data.frame(row = r))
+    if (abs(c - round(c)) < 1e-6)
+      addnode(r, c |> round())
+  }
+}
+```
+
+
+```{r}
+tic()
+for (f in freqs) {
+  scan_pairs(mapmat, f)
+}
+toc()
+```
+
+
+```{r}
+sum(antinodes > 0)
+```
+
+
+
