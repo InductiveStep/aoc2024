@@ -29,5 +29,9 @@ which works very well.
 
 [Day 8: Resonant Collinearity](https://inductivestep.github.io/aoc2024/aoc08.nb.html)
 &ndash; part 1 easy, using a linear regression model on n=2 (no regrets). Part 2
-was an easy extension, eventually. I still don't know what the bug was but
-starting again with an even lazier extention of part 1 fixed it.
+was an easy extension... eventually. I still don't know what the bug was but
+starting again with an even lazier extension of part 1 fixed it.
+
+[Day 9: Disk Fragmenter](https://inductivestep.github.io/aoc2024/aoc09.nb.html)
+&ndash; a few loops sorted out part 1. Ran out of time for part 2.
+

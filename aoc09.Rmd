@@ -1,0 +1,108 @@
+---
+title: "Day 9: Disk Fragmenter"
+author: AndiF
+date: 9 Dec 2024
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(stringr)
+library(tictoc)
+library(gmp)
+```
+
+```{r}
+dat <- read_lines("aoc09.txt") |>
+  strsplit("") |>
+  first() |>
+  as.numeric() |>
+  as.integer()
+spec <- data.frame(n = dat) |>
+  mutate(type = c(rep(c("data", "free"), floor(n()/2)), "data"),
+         i = 1:n(),
+         id = floor((i + 1)/2) - 1)
+head(spec)
+```
+
+
+```{r}
+build_disk <- function(id, type, n) {
+  data.frame(dat = rep(ifelse(type == "data", id, NA), n))
+}
+```
+
+
+```{r}
+the_disk <- pmap(list(spec$id, spec$type, spec$n), build_disk) |>
+  bind_rows()
+```
+
+
+```{r}
+head(the_disk)
+```
+
+
+### Part 1
+
+Move the blocks:
+
+```{r}
+tic()
+start <- 1
+end   <- nrow(the_disk)
+
+while (start < end) {
+  if (!is.na(the_disk[start, "dat"])) {
+    # Find the next free space
+    start <- start + 1
+  }
+  else {
+    while (start < end && is.na(the_disk[end, "dat"])) {
+      # Find the next data
+      end <- end - 1
+    }
+    if (start < end) {
+      # Finally move the data!
+      the_disk[start, "dat"] <- the_disk[end, "dat"]
+      the_disk[end, "dat"] <- NA
+      end <- end - 1
+      start <- start + 1
+    }
+  }
+}
+toc()
+```
+
+Calculate the checksums:
+
+```{r}
+pos <- 0
+the_disk$pos <- rep(NA, nrow(the_disk))
+
+for (i in 1:nrow(the_disk)) {
+  if (!is.na(the_disk[i, "dat"])) {
+    the_disk[i, "pos"] <- pos
+    pos <- pos + 1
+  }
+}
+
+the_disk <- the_disk |>
+  mutate(check = pos * dat)
+```
+
+
+```{r}
+summary(the_disk$check)
+```
+
+```{r}
+sum(the_disk$check |> as.bigz(), na.rm = TRUE)
+```
+
+### Part 2
+
+TBC...
